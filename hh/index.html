@@ -1,0 +1,61 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <style>
+    .sel_btn{
+        display: inline-block;
+        text-decoration: none;
+        outline: none;
+        line-height: 161%;
+        width: 30%;
+        height: 6%;
+        margin: 60% 8% 8% 8%;
+        font-size: 65px;
+        text-align: center;
+        background-color: #6fd685;
+        color: black;
+        border-radius: 300px;
+    }
+    .text{
+        display: inline-block;
+        text-decoration: none;
+        outline: none;
+        width: 80%;
+        height: 6%;
+        margin: 30% 8% 0% 8%;
+        line-height: 160%;
+        font-size: 65px;
+        text-align: center;
+    }
+</style>
+</head>
+
+<body>
+  <div style="text-align: center;">
+    <text class="text" id="tel">号码：18230022455</text>
+    <a class="sel_btn ch_cls" id="a" href="tel:18230022455"><span><span style="font-size:100%;color:rgb(0, 0, 0);font-style:normal;font-weight:normal;">☏</span>&nbsp;拨号</span></a>
+  </div>
+  <script>
+    var a = document.getElementById('a');
+    var tel = getParameter('tel');
+    var text = document.getElementById('tel');
+    text.innerText='号码：'+tel;
+    if(tel == null || tel == undefined || tel == ''){
+      alert('手机号，有误！');
+      a.remove();
+      text.remove();
+    } else {
+      a.href='tel:'+ tel;
+      document.getElementById('a').click();
+    }
+    function getParameter(param) {
+      var query = window.location.search;
+      var iLen = param.length;
+      var iStart = query.indexOf(param);
+      if (iStart == -1)
+      　return "";
+      iStart += iLen + 1;
+      var iEnd = query.indexOf("&", iStart);
+      if (iEnd == -1)
+      　return query.substring(iStart);
+      return query.substring(iStart, iEnd);
+    }
+  </script></body></html>
