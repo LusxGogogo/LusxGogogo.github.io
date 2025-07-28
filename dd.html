@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>停车联系电话</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36BFFA',
+                        neutral: '#F5F7FA',
+                        dark: '#1D2129',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .phone-shadow {
+                box-shadow: 0 10px 25px -5px rgba(22, 93, 255, 0.1), 0 8px 10px -6px rgba(22, 93, 255, 0.1);
+            }
+            .btn-gradient {
+                background: linear-gradient(135deg, #165DFF 0%, #36BFFA 100%);
+            }
+            .btn-hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px -5px rgba(22, 93, 255, 0.3), 0 8px 10px -6px rgba(22, 93, 255, 0.2);
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-neutral min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-2xl phone-shadow overflow-hidden transition-all duration-300">
+        <!-- 顶部装饰条 -->
+        <div class="h-2 bg-gradient-to-r from-primary to-secondary"></div>
+        
+        <!-- 内容区域 -->
+        <div class="p-6 text-center">
+            <div class="mb-4">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-phone text-primary text-3xl"></i>
+                </div>
+                <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-dark mb-2">需要挪车？</h1>
+                <p class="text-gray-500 text-sm mb-6">请拨打下方电话联系车主</p>
+            </div>
+            
+            <!-- 电话号码显示 -->
+            <div class="bg-neutral rounded-xl p-4 mb-6 transition-all duration-300 hover:shadow-md">
+                <div id="phoneNumber" class="text-[clamp(1.5rem,5vw,2.5rem)] font-bold text-dark tracking-wider mb-1">--</div>
+                <p class="text-xs text-gray-400">点击下方按钮直接拨号</p>
+            </div>
+            
+            <!-- 拨号按钮 -->
+            <button id="callButton" class="w-full py-4 rounded-xl text-white font-semibold text-lg btn-gradient shadow-lg hover:btn-hover transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 active:scale-98">
+                <i class="fa fa-phone mr-2"></i> 立即拨号
+            </button>
+            
+            <!-- 底部信息 -->
+            <div class="mt-6 text-xs text-gray-400">
+                <p>扫描此页面二维码联系车主</p>
+                <p class="mt-1">© 2025 智能停车系统</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 从URL参数获取电话号码
+        function getPhoneNumber() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('tel') || '';
+        }
+
+        // 格式化电话号码（添加空格分隔）
+        function formatPhoneNumber(phoneNumber) {
+            if (!phoneNumber) return '';
+            // 假设11位手机号，格式化为3-4-4
+            if (phoneNumber.length === 11) {
+                return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1 $2 $3');
+            }
+            return phoneNumber;
+        }
+
+        // 初始化页面
+        function initPage() {
+            const phoneNumber = getPhoneNumber();
+            const formattedPhone = formatPhoneNumber(phoneNumber);
+            
+            // 更新UI显示
+            const phoneElement = document.getElementById('phoneNumber');
+            if (phoneNumber) {
+                phoneElement.textContent = formattedPhone;
+            } else {
+                phoneElement.textContent = '未设置号码';
+                phoneElement.classList.add('text-gray-400');
+                phoneElement.classList.remove('text-dark');
+                
+                const callButton = document.getElementById('callButton');
+                callButton.disabled = true;
+                callButton.classList.add('opacity-50', 'cursor-not-allowed');
+                callButton.classList.remove('hover:btn-hover');
+            }
+            
+            // 设置拨号按钮点击事件
+            document.getElementById('callButton').addEventListener('click', () => {
+                if (phoneNumber) {
+                    window.location.href = `tel:${phoneNumber}`;
+                }
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>    

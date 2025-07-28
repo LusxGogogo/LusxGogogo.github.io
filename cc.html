@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车主联系方式</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        /* 装饰性元素 */
+        .decoration {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .dec-1 {
+            background: #6a11cb;
+            top: -80px;
+            right: -80px;
+        }
+        
+        .dec-2 {
+            background: #2575fc;
+            bottom: -100px;
+            left: -100px;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header {
+            margin-bottom: 30px;
+        }
+        
+        .car-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 25px rgba(37, 117, 252, 0.3);
+        }
+        
+        .car-icon i {
+            font-size: 50px;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: #2c3e50;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #7f8c8d;
+            line-height: 1.5;
+            max-width: 350px;
+            margin: 0 auto;
+            font-weight: 500;
+        }
+        
+        .contact-card {
+            background: #f8f9ff;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            border: none;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-label {
+            font-size: 18px;
+            color: #6a11cb;
+            margin-bottom: 20px;
+            display: block;
+            font-weight: 600;
+        }
+        
+        .phone-number {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: #2c3e50;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            font-family: 'SF Pro Display', sans-serif;
+        }
+        
+        .call-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 75px;
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(150, 201, 61, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+            z-index: 3;
+        }
+        
+        .call-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(150, 201, 61, 0.4);
+        }
+        
+        .call-button:active {
+            transform: translateY(2px);
+        }
+        
+        .call-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #00b09b, #00d2ff);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .call-button:hover::after {
+            opacity: 1;
+        }
+        
+        .call-button i {
+            margin-right: 12px;
+            font-size: 26px;
+        }
+        
+        .info-box {
+            background: #f1f8ff;
+            border-radius: 18px;
+            padding: 25px;
+            margin-top: 35px;
+            text-align: left;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+        
+        .info-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding-bottom: 15px;
+        }
+        
+        .info-header h3 {
+            color: #2575fc;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-header h3 i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .info-content {
+            color: #7f8c8d;
+            font-size: 15px;
+            line-height: 1.6;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+            display: none;
+        }
+        
+        .info-content.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .info-content p {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .info-content p i {
+            color: #00b09b;
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 35px;
+            font-size: 14px;
+            color: #95a5a6;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .container {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .contact-card {
+            animation: fadeIn 0.8s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+        
+        .call-button {
+            animation: fadeIn 0.8s ease-out 0.4s forwards;
+            opacity: 0;
+        }
+        
+        .info-box {
+            animation: fadeIn 0.8s ease-out 0.6s forwards;
+            opacity: 0;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+                border-radius: 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 16px;
+            }
+            
+            .phone-number {
+                font-size: 34px;
+            }
+            
+            .call-button {
+                height: 65px;
+                font-size: 20px;
+            }
+            
+            .car-icon {
+                width: 85px;
+                height: 85px;
+            }
+            
+            .car-icon i {
+                font-size: 40px;
+            }
+            
+            .contact-card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decoration dec-1"></div>
+    <div class="decoration dec-2"></div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="header">
+                <div class="car-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h1>车主联系方式</h1>
+                <p class="subtitle">临时停车需要联系车主？请拨打以下电话</p>
+            </div>
+            
+            <div class="contact-card">
+                <span class="card-label">扫描二维码联系车主</span>
+                <div class="phone-number" id="phoneNumber">138 8888 6666</div>
+                <p style="color: #7f8c8d; font-size: 16px; margin-top: 15px;">
+                    <i class="fas fa-clock"></i> 24小时可联系
+                </p>
+            </div>
+            
+            <button class="call-button" id="callButton">
+                <i class="fas fa-phone-alt"></i>
+                一键拨打电话
+            </button>
+            
+            <div class="info-box">
+                <div class="info-header" id="infoToggle">
+                    <h3><i class="fas fa-info-circle"></i> 使用说明</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="info-content" id="infoContent">
+                    <p><i class="fas fa-circle"></i> 此二维码仅供临时停车联系使用</p>
+                    <p><i class="fas fa-circle"></i> 请说明您的具体位置和需求</p>
+                    <p><i class="fas fa-circle"></i> 请勿在非紧急情况下打扰车主</p>
+                    <p><i class="fas fa-circle"></i> 通话请保持礼貌，感谢理解</p>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>车主联系方式 | 临时停车专用</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 从URL参数中获取电话号码
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // 格式化电话号码为3-4-4格式
+        function formatPhoneNumber(phone) {
+            // 移除非数字字符
+            const cleaned = ('' + phone).replace(/\D/g, '');
+            
+            // 检查是否为11位手机号
+            if (cleaned.length === 11) {
+                // 格式化为3-4-4
+                return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '$1 $2 $3');
+            }
+            
+            // 其他格式处理（每3位加空格）
+            return cleaned.replace(/(\d{3})(?=\d)/g, '$1 ');
+        }
+        
+
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneNumberElement = document.getElementById('phoneNumber');
+            const callButton = document.getElementById('callButton');
+            const infoToggle = document.getElementById('infoToggle');
+            const infoContent = document.getElementById('infoContent');
+            
+            // 获取tel参数
+            const tel = getQueryParam('tel');
+            
+            if (tel) {
+                // 显示电话号码（每3位加一个空格）
+                const formattedTel = formatPhoneNumber(tel);
+                phoneNumberElement.textContent = formattedTel;
+                
+                // 设置拨号链接
+                callButton.onclick = function() {
+                    window.location.href = `tel:${tel.replace(/\s/g, '')}`;
+                };
+            } else {
+                // 默认显示的电话号码（用于演示）
+                phoneNumberElement.textContent = "138 8888 6666";
+                
+                callButton.onclick = function() {
+                    alert("在真实环境中，点击将直接拨打电话");
+                };
+            }
+            
+            // 折叠面板功能
+            infoToggle.addEventListener('click', function() {
+                infoContent.classList.toggle('show');
+                const icon = this.querySelector('.fa-chevron-down');
+                icon.classList.toggle('fa-rotate-180');
+            });
+        });
+    </script>
+</body>
+</html>
