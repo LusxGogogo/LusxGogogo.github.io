@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP停车服务热线</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* 霓虹灯边框效果 */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 20px;
+            background: linear-gradient(45deg, #ff00cc, #3333ff, #00ccff);
+            z-index: -1;
+            margin: -3px;
+            animation: borderAnimation 3s linear infinite;
+        }
+        
+        @keyframes borderAnimation {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+        
+        .logo i {
+            font-size: 60px;
+            color: #00ccff;
+            text-shadow: 0 0 15px rgba(0, 204, 255, 0.7);
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(to right, #ff00cc, #00ccff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+        }
+        
+        .phone-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .phone-label {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .phone-number {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+        }
+        
+        .call-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 70px;
+            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 22px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(51, 51, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .call-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(51, 51, 255, 0.6);
+        }
+        
+        .call-button:active {
+            transform: translateY(0);
+        }
+        
+        .call-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .call-button:hover::before {
+            left: 100%;
+        }
+        
+        .call-button i {
+            margin-right: 12px;
+            font-size: 26px;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature i {
+            font-size: 24px;
+            color: #00ccff;
+            margin-bottom: 10px;
+        }
+        
+        .feature h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        
+        .feature p {
+            font-size: 12px;
+            color: #aaa;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 12px;
+            color: #777;
+            letter-spacing: 0.5px;
+        }
+        
+        /* 动画效果 */
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            h1 { font-size: 24px; }
+            .phone-number { font-size: 30px; }
+            .call-button { height: 60px; font-size: 18px; }
+            .container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <i class="fas fa-parking"></i>
+        </div>
+        
+        <h1>VIP停车服务热线</h1>
+        <p class="subtitle">24小时专业停车服务，随时为您效劳</p>
+        
+        <div class="phone-container">
+            <span class="phone-label">您的专属停车电话</span>
+            <div class="phone-number" id="phoneNumber">正在加载...</div>
+        </div>
+        
+        <button class="call-button" id="callButton">
+            <i class="fas fa-phone-alt"></i>
+            立即拨打电话
+        </button>
+        
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-clock"></i>
+                <h3>24小时服务</h3>
+                <p>全天候为您提供停车服务</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-car"></i>
+                <h3>专属车位</h3>
+                <p>保留您的专属停车位置</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-shield-alt"></i>
+                <h3>安全保障</h3>
+                <p>24小时监控与巡逻</p>
+            </div>
+            <div class="feature">
+                <i class="fas fa-concierge-bell"></i>
+                <h3>尊贵服务</h3>
+                <p>VIP专属停车待遇</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2023 尊享停车服务 | 专业值得信赖</p>
+        </div>
+    </div>
+
+    <script>
+        // 从URL参数中获取电话号码
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneNumberElement = document.getElementById('phoneNumber');
+            const callButton = document.getElementById('callButton');
+            
+            // 获取tel参数
+            const tel = getQueryParam('tel');
+            
+            if (tel) {
+                // 显示电话号码（每3位加一个空格）
+                const formattedTel = tel.replace(/(\d{3})(?=\d)/g, '$1 ');
+                phoneNumberElement.textContent = formattedTel;
+                
+                // 设置拨号链接
+                callButton.onclick = function() {
+                    window.location.href = `tel:${tel}`;
+                };
+            } else {
+                phoneNumberElement.textContent = "未提供电话号码";
+                callButton.disabled = true;
+                callButton.style.opacity = "0.6";
+                callButton.style.cursor = "not-allowed";
+            }
+            
+            // 添加点击动画效果
+            callButton.addEventListener('click', function() {
+                this.classList.add('clicked');
+                setTimeout(() => {
+                    this.classList.remove('clicked');
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
