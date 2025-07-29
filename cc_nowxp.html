@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>车主联系方式</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 100%;
+            background: white;
+            border-radius: 24px;
+            padding: 30px 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            margin: 15px;
+        }
+        
+        /* 装饰性元素 */
+        .decoration {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .dec-1 {
+            background: #6a11cb;
+            top: -60px;
+            right: -60px;
+        }
+        
+        .dec-2 {
+            background: #2575fc;
+            bottom: -80px;
+            left: -80px;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header {
+            margin-bottom: 25px;
+        }
+        
+        .car-icon {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(37, 117, 252, 0.3);
+        }
+        
+        .car-icon i {
+            font-size: 45px;
+            color: white;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: #2c3e50;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #7f8c8d;
+            line-height: 1.4;
+            max-width: 100%;
+            margin: 0 auto;
+            font-weight: 500;
+            padding: 0 10px;
+        }
+        
+        .contact-card {
+            background: #f8f9ff;
+            border-radius: 18px;
+            padding: 25px 15px;
+            margin-bottom: 20px;
+            border: none;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-label {
+            font-size: 16px;
+            color: #6a11cb;
+            margin-bottom: 15px;
+            display: block;
+            font-weight: 600;
+        }
+        
+        .phone-number {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #2c3e50;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            font-family: 'SF Pro Display', sans-serif;
+            word-break: break-all;
+            padding: 0 5px;
+        }
+        
+        .call-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 65px;
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(150, 201, 61, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-top: 15px;
+            z-index: 3;
+        }
+        
+        .call-button:hover, .call-button:focus {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(150, 201, 61, 0.4);
+        }
+        
+        .call-button:active {
+            transform: translateY(2px);
+        }
+        
+        .call-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #00b09b, #00d2ff);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .call-button:hover::after, .call-button:focus::after {
+            opacity: 1;
+        }
+        
+        .call-button i {
+            margin-right: 10px;
+            font-size: 22px;
+        }
+        
+        /* 通知按钮样式 */
+        .notify-button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 65px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(106, 17, 203, 0.3);
+            position: relative;
+            overflow: hidden;
+            margin-top: 12px;
+            z-index: 3;
+        }
+        
+        .notify-button:hover, .notify-button:focus {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(106, 17, 203, 0.4);
+        }
+        
+        .notify-button:active {
+            transform: translateY(2px);
+        }
+        
+        .notify-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #6a11cb, #4a00e0);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .notify-button:hover::after, .notify-button:focus::after {
+            opacity: 1;
+        }
+        
+        .notify-button i {
+            margin-right: 10px;
+            font-size: 22px;
+        }
+        
+        .info-box {
+            background: #f1f8ff;
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 25px;
+            text-align: left;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+        
+        .info-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            padding-bottom: 12px;
+        }
+        
+        .info-header h3 {
+            color: #2575fc;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-header h3 i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .info-content {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.5;
+            padding-top: 12px;
+            border-top: 1px solid #e9ecef;
+            display: none;
+        }
+        
+        .info-content.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .info-content p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .info-content p i {
+            color: #00b09b;
+            margin-right: 8px;
+            margin-top: 4px;
+            font-size: 12px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 13px;
+            color: #95a5a6;
+            letter-spacing: 0.3px;
+            font-weight: 500;
+            padding: 0 10px;
+        }
+        
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+            animation: modalIn 0.4s ease-out;
+        }
+        
+        .modal-header {
+            margin-bottom: 15px;
+        }
+        
+        .modal-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        
+        .success .modal-icon {
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+        }
+        
+        .error .modal-icon {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+        }
+        
+        .modal-icon i {
+            font-size: 35px;
+            color: white;
+        }
+        
+        .modal-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .modal-message {
+            font-size: 16px;
+            color: #7f8c8d;
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+        
+        .modal-details {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 12px;
+            text-align: left;
+            margin: 15px 0;
+            max-height: 40vh;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+        
+        .modal-details h4 {
+            color: #6a11cb;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .modal-details pre {
+            font-size: 13px;
+            color: #555;
+            white-space: pre-wrap;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+        
+        .close-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            width: 100%;
+            max-width: 200px;
+        }
+        
+        .close-button:hover, .close-button:focus {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+        }
+        
+        /* 加载动画 */
+        .loader {
+            display: none;
+            width: 45px;
+            height: 45px;
+            border: 4px solid rgba(106, 17, 203, 0.2);
+            border-radius: 50%;
+            border-top: 4px solid #6a11cb;
+            margin: 20px auto;
+            animation: spin 1s linear infinite;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .container {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        
+        .contact-card {
+            animation: fadeIn 0.8s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+        
+        .call-button {
+            animation: fadeIn 0.8s ease-out 0.4s forwards;
+            opacity: 0;
+        }
+        
+        .notify-button {
+            animation: fadeIn 0.8s ease-out 0.5s forwards;
+            opacity: 0;
+        }
+        
+        .info-box {
+            animation: fadeIn 0.8s ease-out 0.6s forwards;
+            opacity: 0;
+        }
+        
+        /* 适配超小屏幕 */
+        @media (max-width: 360px) {
+            .container {
+                padding: 20px 15px;
+                border-radius: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .subtitle {
+                font-size: 14px;
+            }
+            
+            .phone-number {
+                font-size: 28px;
+            }
+            
+            .call-button, .notify-button {
+                height: 60px;
+                font-size: 17px;
+            }
+            
+            .car-icon {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .car-icon i {
+                font-size: 35px;
+            }
+            
+            .contact-card {
+                padding: 20px 12px;
+            }
+            
+            .modal-content {
+                padding: 20px 15px;
+            }
+            
+            .modal-title {
+                font-size: 20px;
+            }
+            
+            .modal-message {
+                font-size: 15px;
+            }
+            
+            .info-box {
+                padding: 15px;
+            }
+        }
+        
+        /* 防止iOS缩放 */
+        input, button, textarea, select {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="decoration dec-1"></div>
+    <div class="decoration dec-2"></div>
+    
+    <div class="container">
+        <div class="content">
+            <div class="header">
+                <div class="car-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h1>车主联系方式</h1>
+                <p class="subtitle">抱歉给您带来不便，请拨打以下电话</p>
+            </div>
+            
+            <div class="contact-card">
+                <span class="card-label">点击下方按钮直接拨号</span>
+                <div class="phone-number" id="phoneNumber">138 8888 6666</div>
+                <p style="color: #7f8c8d; font-size: 15px; margin-top: 12px;">
+                    <i class="fas fa-clock"></i> 24小时可联系
+                </p>
+            </div>
+            
+            <button class="call-button" id="callButton">
+                <i class="fas fa-phone-alt"></i>
+                一键拨打电话
+            </button>
+            
+            <button class="notify-button" id="notifyButton">
+                <i class="fas fa-bell"></i>
+                通知车主
+            </button>
+            
+            <div class="info-box">
+                <div class="info-header" id="infoToggle">
+                    <h3><i class="fas fa-info-circle"></i> 使用说明</h3>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="info-content" id="infoContent">
+                    <p><i class="fas fa-circle"></i> 此二维码仅供临时停车联系使用</p>
+                    <p><i class="fas fa-circle"></i> 接到电话后我会立即前来移车</p>
+                    <p><i class="fas fa-circle"></i> "通知车主"功能会向车主发送通知</p>
+                    <p><i class="fas fa-circle"></i> 感谢您的理解和耐心</p>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p>车主联系方式 | 临时停车专用</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗结构 -->
+    <div class="modal" id="notificationModal">
+        <div class="modal-content" id="modalContent">
+            <div class="loader" id="loader"></div>
+            
+            <div class="modal-header" id="modalHeader" style="display: none;">
+                <div class="modal-icon">
+                    <i id="modalIcon"></i>
+                </div>
+                <h2 class="modal-title" id="modalTitle">通知结果</h2>
+            </div>
+            
+            <p class="modal-message" id="modalMessage"></p>
+            
+            <button class="close-button" id="closeModal">关闭</button>
+        </div>
+    </div>
+
+    <script>
+        // 从URL参数中获取电话号码
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // 格式化电话号码为3-4-4格式
+        function formatPhoneNumber(phone) {
+            // 移除非数字字符
+            const cleaned = ('' + phone).replace(/\D/g, '');
+            
+            // 检查是否为11位手机号
+            if (cleaned.length === 11) {
+                // 格式化为3-4-4
+                return cleaned.replace(/(\d{3})(\d{4})(\d{4})/, '$1 $2 $3');
+            }
+            
+            // 其他格式处理（每3位加空格）
+            return cleaned.replace(/(\d{3})(?=\d)/g, '$1 ');
+        }
+
+        // 获取当前时间
+        function getCurrentDateTime() {
+            const now = new Date();
+            return now.toLocaleString();
+        }
+        
+        // 发送Webhook通知
+        async function sendNotification(data) {
+            const webhookUrl = "https://wxpusher.zjiecode.com/api/send/message";
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const responseData = await response.json();
+                return responseData;
+
+            } catch (error) {
+                throw new Error(`通知发送失败: ${error.message}`);
+            }
+        }
+        
+        // 显示通知结果弹窗
+        function showNotificationResult(success, message) {
+            const modal = document.getElementById('notificationModal');
+            const modalContent = document.getElementById('modalContent');
+            const modalHeader = document.getElementById('modalHeader');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            const loader = document.getElementById('loader');
+            
+            // 隐藏加载动画
+            loader.style.display = 'none';
+            
+            // 显示弹窗内容
+            modalHeader.style.display = 'block';
+            modalContent.classList.remove('success', 'error');
+            
+            if (success) {
+                modalContent.classList.add('success');
+                modalIcon.className = 'fas fa-check';
+                modalTitle.textContent = '通知成功';
+            } else {
+                modalContent.classList.add('error');
+                modalIcon.className = 'fas fa-exclamation-triangle';
+                modalTitle.textContent = '通知失败';
+            }
+            
+            modalMessage.textContent = message;
+            
+            // 显示弹窗
+            modal.style.display = 'flex';
+        }
+        
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneNumberElement = document.getElementById('phoneNumber');
+            const callButton = document.getElementById('callButton');
+            const notifyButton = document.getElementById('notifyButton');
+            const infoToggle = document.getElementById('infoToggle');
+            const infoContent = document.getElementById('infoContent');
+            const modal = document.getElementById('notificationModal');
+            const closeModal = document.getElementById('closeModal');
+            const loader = document.getElementById('loader');
+            
+            // 获取tel参数
+            const tel = getQueryParam('tel') || '13888886666';
+            
+            // 显示电话号码（每3位加一个空格）
+            const formattedTel = formatPhoneNumber(tel);
+            phoneNumberElement.textContent = formattedTel;
+            
+            // 设置拨号链接
+            callButton.onclick = function() {
+                window.location.href = `tel:${tel.replace(/\s/g, '')}`;
+            };
+            
+            // 通知按钮点击事件
+            notifyButton.onclick = async function() {
+                // 显示加载动画
+                modal.style.display = 'flex';
+                loader.style.display = 'block';
+                document.getElementById('modalHeader').style.display = 'none';
+                document.getElementById('modalMessage').textContent = '';
+                
+                
+                const pushInfo = "<h1>挪车啦！</h1><br/>" + "<b>userAgent</b>=" + navigator.userAgent + "<br>"
+                                  + "<b>language</b>=" + navigator.language + "<br>"
+                                  + "<b>platform</b>=" + navigator.platform + "<br>"
+                                  + "<b>screen</b>=" + `${screen.width}×${screen.height}` + "<br>"
+                                  + "<b>location</b>=" + window.location.href + "<br>";
+                // "<h1>H1标题</h1><br/><p style=\"color:red;\">欢迎你使用WxPusher，推荐使用HTML发送</p>"
+                
+                // 收集数据
+                const notificationData = {
+                    appToken: "AT_3VYy8EFY8XhljD5JARRKgYR4N7g2FZJ4",
+                    content: pushInfo,
+                    summary: "您的车辆需要移车，请尽快处理！",
+                    contentType: 2,
+                    topicIds: [
+                        41596
+                    ]
+                };
+                
+                try {
+                    // 发送通知
+                    await sendNotification(notificationData);
+                    
+                    // 显示成功结果
+                    showNotificationResult(
+                        true, 
+                        "已成功通知车主！车主将尽快前来处理。"
+                    );
+                } catch (error) {
+                    showNotificationResult(
+                        false,
+                        `通知发送失败: ${error.message}`
+                    );
+                }
+            };
+            
+            // 折叠面板功能
+            infoToggle.addEventListener('click', function() {
+                infoContent.classList.toggle('show');
+                const icon = this.querySelector('.fa-chevron-down');
+                icon.classList.toggle('fa-rotate-180');
+            });
+            
+            // 关闭弹窗
+            closeModal.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+            
+            // 点击弹窗外部关闭
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // 防止iOS缩放
+            document.addEventListener('touchstart', function(event) {
+                if (event.touches.length > 1) {
+                    event.preventDefault();
+                }
+            }, { passive: false });
+            
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+        });
+    </script>
+</body>
+</html>

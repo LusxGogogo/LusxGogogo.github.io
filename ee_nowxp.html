@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系车主电话</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36BFFA',
+                        neutral: '#F5F7FA',
+                        dark: '#1D2129',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .phone-shadow {
+                box-shadow: 0 10px 25px -5px rgba(22, 93, 255, 0.1), 0 8px 10px -6px rgba(22, 93, 255, 0.1);
+            }
+            .btn-gradient {
+                background: linear-gradient(135deg, #165DFF 0%, #36BFFA 100%);
+            }
+            .btn-hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px -5px rgba(22, 93, 255, 0.3), 0 8px 10px -6px rgba(22, 93, 255, 0.2);
+            }
+            .modal-backdrop {
+                backdrop-filter: blur(4px);
+            }
+        }
+    </style>
+</head>
+<body class="font-inter bg-neutral min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white rounded-2xl phone-shadow overflow-hidden transition-all duration-300">
+        <!-- 顶部装饰条 -->
+        <div class="h-2 bg-gradient-to-r from-primary to-secondary"></div>
+        
+        <!-- 内容区域 -->
+        <div class="p-6 text-center">
+            <div class="mb-4">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-phone text-primary text-3xl"></i>
+                </div>
+                <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold text-dark mb-2">需要挪车？</h1>
+                <p class="text-gray-500 text-sm mb-6">抱歉给您带来不便，请拨打下方电话联系车主</p>
+            </div>
+            
+            <!-- 电话号码显示 -->
+            <div class="bg-neutral rounded-xl p-4 mb-6 transition-all duration-300 hover:shadow-md">
+                <div id="phoneNumber" class="text-[clamp(1.5rem,5vw,2.5rem)] font-bold text-dark tracking-wider mb-1">--</div>
+                <p class="text-xs text-gray-400">点击下方按钮直接拨号</p>
+            </div>
+            
+            <!-- 按钮组 -->
+            <div class="space-y-3">
+                <!-- 拨号按钮 -->
+                <button id="callButton" class="w-full py-4 rounded-xl text-white font-semibold text-lg btn-gradient shadow-lg hover:btn-hover transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 active:scale-98">
+                    <i class="fa fa-phone mr-2"></i> 立即拨号
+                </button>
+                
+                <!-- 通知车主按钮 -->
+                <button id="notifyButton" class="w-full py-4 rounded-xl text-white font-semibold text-lg bg-primary/90 shadow-lg hover:bg-primary transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50 active:scale-98">
+                    <i class="fa fa-bell mr-2"></i> 通知车主
+                </button>
+            </div>
+            
+            <!-- 底部信息 -->
+            <div class="mt-6 text-xs text-gray-400">
+                <p>感谢您的理解和耐心，马上挪车！</p>
+                <p class="mt-1">© 2025 临时停车专用</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 通知结果弹窗 -->
+    <div id="notificationModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="absolute inset-0 bg-black/50 modal-backdrop"></div>
+        <div class="bg-white rounded-xl p-6 max-w-md w-full z-10 transform transition-all duration-300 scale-95">
+            <div class="text-center">
+                <div id="modalIcon" class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center">
+                    <i id="modalIconContent" class="text-3xl"></i>
+                </div>
+                <h3 id="modalTitle" class="text-xl font-bold text-dark mb-2">通知成功</h3>
+                <p id="modalMessage" class="text-gray-600 mb-6">已通知车主前来挪车</p>
+                <button id="closeModal" class="w-full py-3 rounded-lg text-white font-semibold bg-primary hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 从URL参数获取电话号码
+        function getPhoneNumber() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('tel') || '';
+        }
+
+        // 格式化电话号码（添加空格分隔）
+        function formatPhoneNumber(phoneNumber) {
+            if (!phoneNumber) return '';
+            // 假设11位手机号，格式化为3-4-4
+            if (phoneNumber.length === 11) {
+                return phoneNumber.replace(/(\d{3})(\d{4})(\d{4})/, '$1 $2 $3');
+            }
+            return phoneNumber;
+        }
+
+        // 获取设备和浏览器信息
+        function getDeviceInfo() {
+            return {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: window.screen.width + 'x' + window.screen.height,
+                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            };
+        }
+
+        // 显示通知结果弹窗
+        function showNotificationModal(type, title, message) {
+            const modal = document.getElementById('notificationModal');
+            const modalIcon = document.getElementById('modalIcon');
+            const modalIconContent = document.getElementById('modalIconContent');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            
+            // 设置弹窗内容
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            
+            // 设置图标和颜色
+            if (type === 'success') {
+                modalIcon.className = 'w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-success/10';
+                modalIconContent.className = 'fa fa-check text-success text-3xl';
+            } else if (type === 'error') {
+                modalIcon.className = 'w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-danger/10';
+                modalIconContent.className = 'fa fa-times text-danger text-3xl';
+            } else if (type === 'warning') {
+                modalIcon.className = 'w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-warning/10';
+                modalIconContent.className = 'fa fa-exclamation text-warning text-3xl';
+            }
+            
+            // 显示弹窗
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modal.querySelector('div:not(.modal-backdrop)').classList.remove('scale-95');
+            modal.querySelector('div:not(.modal-backdrop)').classList.add('scale-100');
+        }
+
+        // 关闭通知结果弹窗
+        function closeNotificationModal() {
+            const modal = document.getElementById('notificationModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modal.querySelector('div:not(.modal-backdrop)').classList.remove('scale-100');
+            modal.querySelector('div:not(.modal-backdrop)').classList.add('scale-95');
+        }
+        
+        function formatKeyValuePairs(obj) {
+          return Object.entries(obj)
+            .map(([key, value]) => `<p style=\"color:red;\"><b>${key}</b></p> ${value}`)
+            .join('<br>');
+        }
+
+        // 发送Webhook通知（GET请求方式）
+        async function sendNotification(phoneNumber) {
+            // 显示加载状态
+            const notifyButton = document.getElementById('notifyButton');
+            const originalText = notifyButton.innerHTML;
+            notifyButton.disabled = true;
+            notifyButton.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 发送中...';
+            
+            try {
+                // 获取设备和浏览器信息
+                const deviceInfo = getDeviceInfo();
+                // 格式化信息
+                const deviceData = formatKeyValuePairs(deviceInfo);
+
+                const notificationData = {
+                    appToken: "AT_3VYy8EFY8XhljD5JARRKgYR4N7g2FZJ4",
+                    content: "<h1>请挪车！</h1><br/>" + deviceData,
+                    summary: "您的车辆需要移车，请尽快处理！",
+                    contentType: 2,
+                    topicIds: [
+                        41596
+                    ]
+                };
+
+
+                // 发送Webhook请求
+                const webhookUrl = "https://wxpusher.zjiecode.com/api/send/message";
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(notificationData)
+                });
+
+
+                // 处理响应
+                if (response.ok) {
+                    showNotificationModal('success', '通知成功', '已通知车主前来挪车');
+                } else {
+                    showNotificationModal('error', '通知失败', '发送通知时出错，请稍后再试');
+                    console.error('Webhook响应错误:', response.status, response.statusText);
+                }
+            } catch (error) {
+                showNotificationModal('error', '网络错误', '无法连接到服务器，请检查网络连接');
+                console.error('发送Webhook时出错:', error);
+            } finally {
+                // 恢复按钮状态
+                notifyButton.disabled = false;
+                notifyButton.innerHTML = originalText;
+            }
+        }
+
+        // 初始化页面
+        function initPage() {
+            const phoneNumber = getPhoneNumber();
+            const formattedPhone = formatPhoneNumber(phoneNumber);
+            
+            // 更新UI显示
+            const phoneElement = document.getElementById('phoneNumber');
+            if (phoneNumber) {
+                phoneElement.textContent = formattedPhone;
+            } else {
+                phoneElement.textContent = '未设置号码';
+                phoneElement.classList.add('text-gray-400');
+                phoneElement.classList.remove('text-dark');
+                
+                const callButton = document.getElementById('callButton');
+                callButton.disabled = true;
+                callButton.classList.add('opacity-50', 'cursor-not-allowed');
+                callButton.classList.remove('hover:btn-hover');
+                
+                const notifyButton = document.getElementById('notifyButton');
+                notifyButton.disabled = true;
+                notifyButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+            
+            // 设置拨号按钮点击事件
+            document.getElementById('callButton').addEventListener('click', () => {
+                if (phoneNumber) {
+                    window.location.href = `tel:${phoneNumber}`;
+                }
+            });
+            
+            // 设置通知按钮点击事件
+            document.getElementById('notifyButton').addEventListener('click', () => {
+                if (phoneNumber) {
+                    sendNotification(phoneNumber);
+                }
+            });
+            
+            // 设置关闭弹窗事件
+            document.getElementById('closeModal').addEventListener('click', closeNotificationModal);
+            
+            // 点击遮罩层关闭弹窗
+            document.getElementById('notificationModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('notificationModal')) {
+                    closeNotificationModal();
+                }
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>
